@@ -17,7 +17,8 @@ import time
 
 import os, os.path
 
-myPath = '/Users/df/0_myDATA/testSamples/'
+# myPath = '/Users/df/0_myDATA/testSamples/'
+myPath = '/Users/df/Documents/myGits/fiberDirectionality/testSamples'
 
 YNtest = 'Yes'
 
