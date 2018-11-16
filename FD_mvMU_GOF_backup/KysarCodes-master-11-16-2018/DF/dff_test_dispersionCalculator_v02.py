@@ -16,7 +16,7 @@ import pandas as pd
 # import packages specific to our work: 
 import dff_dispersionCalculator as dC
 import dff_mle_minimize_mvMU as DFmle
-import DF_StatsTools as DFST
+import dff_StatsTools as DFST
 
 import os, os.path
 
@@ -58,87 +58,14 @@ n_X = dC.normalizeIntensity( angles, values, YNplot='Yes' )
 Int = n_X[:,1]
 
 # make points of angles based on the light intensity: 
-p_X = ( dC.makePoints( n_X, YNplot='Yes' )  + np.pi/2 )/np.pi
-#p_X = p_X + np.pi/2
-nn = len(p_X)
+p_X = dC.makePoints( n_X, YNplot='Yes' )
 
-u_X = np.random.uniform(0.0,np.pi,nn)
-u_X = np.sort(np.unique(u_X))/np.pi
-
-hh = np.arange(1/(nn+1), nn/(nn+1), 1/(nn+1))
-#hh = np.arange(0, nn/(nn+1), 1/(nn+1))
-#hh = np.arange(1/(nn+1), 1, 1/(nn+1))
-
-fig, ax00 = plt.subplots(1, 1, figsize=(6, 6))
-ax00.plot(hh, p_X[1::], color='r', linestyle=':', label='data')
-ax00.plot(hh, u_X[1::], color='b', linestyle=':', label='uniform')
-ax00.plot([0, 1], [0, 1], color='g', linestyle='--', label='45$^o$ line')
-ax00.plot(hh, hh, color='m')
-ax00.legend()
-ax00.axis('square')
-
-R2 = DFST.myR2( hh, p_X[1::] )
-print('R2: ',R2)
-R2u = DFST.myR2( hh, u_X[1::] )
-print('R2 u: ',R2u)
 # select model to fit: 
 #model_test = '1vM'
 #model_test = '2vM'
 #model_test = '3vM'
 #model_test = '2vM1U'
 model_test = '1vM1U'
-
-slope1, intercept1, r_value1, p_value1, std_err1 = stats.linregress(hh, p_X[1::])
-#slope1, intercept1, r_value1, p_value1, std_err1 = stats.linregress(hh, u_X[1::])
-fig, ax0 = plt.subplots(1, 1, figsize=(6, 6))
-ax0.plot(hh, p_X[1::], color='r', linestyle=':', label='data')
-#ax0.plot(hh, u_X[1::], color='r', linestyle=':', label='data')
-ax0.plot(hh, hh, color='g', linestyle='--', label='45$^o$ line')
-ax0.plot(hh, slope1*hh+intercept1, color='m', linestyle='--', label='free linear fit')
-ax0.legend()
-ax0.axis('square')
-#print('R2_1, P2_2: ', r_value1, r_value2)
-
-SSEp = sum((hh - p_X[1::])**2)
-SSTO = sum((hh - np.mean(hh))**2)
-r2p = 1 - SSEp/SSTO
-r2p_adj = r2p - (1-r2p)/(nn-2)
-SSEu = sum((hh - u_X[1::])**2)
-r2u = 1 - SSEu/SSTO
-r2u_adj = r2u - (1-r2u)/(nn-2)
-print('r2p, r2u: ', r2p, r2u)
-print('r2p_adj, r2u_adj: ', r2p_adj, r2u_adj)
-ax0.annotate('$R^2=%s$' % r2p, xy=(0.4,1.0), xytext=(0.4, 1.0) )
-
-def Uniformity_test( self ):
-    '''
-    Assesement of Uniformity of Raw data:
-        using a uniform probability plot:
-            plot the sorted observations theta_i/pi against i(n+1)
-            If the data come from a uniform distribution, then the points
-            should lie near a straight line of unit slope passing through 
-            the origin.
-        The function also returns the R2 "coefficient of determination" 
-            for that fit: the closer to unity the more uniform the data.
-    '''
-    # get the observed data: 
-    pX = ( self.makePoints() + np.pi/2 )/np.pi
-    n = len(pX)
-    h = np.arange(1/(n+1), n/(n+1), 1/(n+1))
-    fig, ax = plt.subplots(1, 1, figsize=(6, 6))
-    ax.plot(h, pX[1::], color='r', linestyle=':', label='data')
-    #ax.plot([0, 1], [0, 1], color='g', linestyle='--', label='45$^o$ line')
-    ax.plot(h, h, color='g', linestyle='--', label='45$^o$ line')
-    ax.square()
-    ax.legend()
-    
-    # compute the R2 coefficient of determination: 
-    SSE = sum((h - p_X[1::])**2)
-    SSTO = sum((h - np.mean(h))**2)
-    R2 = 1 - SSE/SSTO
-    ax.annotate('$R^2=%s$' % R2, xy=(0.4,1.0), xytext=(0.4, 1.0) )
-    
-    return R2
 
 # CAUTION: sensitive to the initial guess! so decide first which values 
 #           to use based on the histogram of the original data.

@@ -1,0 +1,26 @@
+# Auxiliary Folders
+.coverage
+.vs
+.vscode
+htmlcov
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Sphinx documentation
+docs/_build/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Windows
+desktop.ini
+
+#Backup
+*.bak
